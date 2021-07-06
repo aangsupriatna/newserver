@@ -1,0 +1,82 @@
+ type Query {
+    #  User Query
+    isLogin: Boolean!
+    user(id: ID!): User
+    users: [User]
+
+    # Project query
+    project(id: ID!): Project
+    projects: [Project]
+}
+
+ type Mutation {
+    #  User mutation
+    login(input: UserLogin): String
+    addUser(input: UserInput): User
+    updateUser(input: UserInput): User
+    deleteUser(id: ID): User
+
+    #  Project mutation
+    addProject(input: ProjectInput): Project
+    editProject(input: ProjectInput): Project
+    removeProject(id: ID): Project
+}
+
+# User type
+type User {
+    id: ID
+    username: String
+    email: String
+    password: String
+    roles: String
+}
+
+input UserInput{
+    id: ID
+    username: String
+    email: String
+    password: String
+    roles: String
+}
+
+type Token {
+    token: String
+}
+
+input UserLogin{
+    email: String
+    password: String
+}
+
+# Project type
+input ProjectInput {
+    id: ID
+    namaProyek: String
+    bidang: String
+    lokasi: String
+    namaPemberiTugas: String
+    alamatPemberiTugas: String
+    tanggalKontrak: String
+    nomorKontrak: String
+    nilaiKontrak: String
+    jv: Int
+    jvWith: String
+    tanggalBast: String
+    nomorBast: String
+}
+
+type Project {
+    id: ID
+    namaProyek: String
+    bidang: String
+    lokasi: String
+    namaPemberiTugas: String
+    alamatPemberiTugas: String
+    tanggalKontrak: String
+    nomorKontrak: String
+    nilaiKontrak: String
+    jv: Int
+    jvWith: String
+    tanggalBast: String
+    nomorBast: String
+}
