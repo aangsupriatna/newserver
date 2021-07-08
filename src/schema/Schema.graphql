@@ -1,6 +1,6 @@
  type Query {
     #  User Query
-    isLogin: Boolean!
+    isSignin: Boolean!
     user(id: ID!): User
     users: [User]
 
@@ -11,7 +11,8 @@
 
  type Mutation {
     #  User mutation
-    login(input: UserLogin): String
+    signin(input: UserLogin): Token
+    refreshTokens(token: String): Token
     addUser(input: UserInput): User
     updateUser(input: UserInput): User
     deleteUser(id: ID): User
@@ -28,7 +29,7 @@ type User {
     username: String
     email: String
     password: String
-    roles: String
+    isAdmin: Boolean
 }
 
 input UserInput{
@@ -36,16 +37,17 @@ input UserInput{
     username: String
     email: String
     password: String
-    roles: String
+    isAdmin: Boolean
 }
 
 type Token {
-    token: String
+    accessToken: String
+    refreshToken: String
 }
 
 input UserLogin{
-    email: String
-    password: String
+    email: String!
+    password: String!
 }
 
 # Project type

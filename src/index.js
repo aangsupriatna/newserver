@@ -30,6 +30,10 @@ const server = new GraphQLServer({
   context,
 });
 
+// server.express.use((req, res, next) => {
+//   res.header('Access-Control-Expose-Headers', 'x-access-token, x-refresh-token');
+//   next();
+// })
 // Auth middleware
 server.express.use(AuthMiddleware);
 

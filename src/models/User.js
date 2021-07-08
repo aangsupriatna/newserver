@@ -6,7 +6,7 @@ const UserSchema = Schema({
   username: { type: String, unique: true, required: true, dropDups: true },
   email: { type: String, unique: true, required: true, dropDups: true },
   password: String,
-  roles: { type: String, default: "USER" }
+  isAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {
