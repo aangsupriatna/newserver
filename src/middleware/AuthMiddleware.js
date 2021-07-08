@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 const AuthMiddleware = async (req, res, next) => {
   const { authorization } = req.headers
-  console.log(authorization)
+  // console.log(authorization)
   if (!authorization) {
     req.error = "No authentication header found."
     req.isAuth = false
@@ -14,9 +14,11 @@ const AuthMiddleware = async (req, res, next) => {
   try {
     // const token = accestoken.split(' ')[1]
     decoded = await jwt.verify(authorization, process.env.JWT_KEY)
+    console.log(decoded)
   } catch (error) {
     req.isAuth = false
     req.error = error.message
+    console.log(error.message)
     return next()
   }
 

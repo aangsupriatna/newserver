@@ -41,8 +41,9 @@ const UserResolver = {
   },
 
   Mutation: {
-    signin: async (parent, { input }, { context }) => {
+    signin: async (parent, { input }, { req }) => {
       const { email, password } = input;
+      console.log(req.error)
       const user = await User.findOne({ email: email }).exec();
 
       // if (!user) throw Error("User doesn't exists");
@@ -59,7 +60,7 @@ const UserResolver = {
         refreshToken,
       };
     },
-    refreshTokens: async (parent, { token }, { context }) => {
+    refreshLogin: async (parent, { token }, { context }) => {
       let userId = -1
       try {
         const { user: { id } } = await jwt.verify(token, process.env.JWT_KEY);
