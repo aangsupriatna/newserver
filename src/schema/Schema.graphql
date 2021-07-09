@@ -11,6 +11,7 @@
 
  type Mutation {
     #  User mutation
+    checkSignin: Boolean
     signin(input: UserLogin): Token
     refreshLogin(token: String): Token
     addUser(input: UserInput): User

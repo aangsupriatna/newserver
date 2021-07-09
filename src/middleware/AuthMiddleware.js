@@ -12,13 +12,14 @@ const AuthMiddleware = async (req, res, next) => {
   let decoded
 
   try {
-    // const token = accestoken.split(' ')[1]
-    decoded = await jwt.verify(authorization, process.env.JWT_KEY)
-    console.log(decoded)
+    const token = authorization.split(' ')[1]
+    // console.log(token)
+    decoded = await jwt.verify(token, process.env.JWT_KEY)
+    // console.log(decoded)
   } catch (error) {
     req.isAuth = false
     req.error = error.message
-    console.log(error.message)
+    // console.log(error.message)
     return next()
   }
 

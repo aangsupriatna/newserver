@@ -34,22 +34,23 @@ const UserResolver = {
       if (!req.isAuth) throw Error("Not authorized!")
       return await User.findById(id).exec();
     },
-    users: async (parent, input, context) => {
-      if (!context.req.isAuth) throw Error("Not authorized!")
+    users: async (parent, input, { req }) => {
+      // console.log(req.error)
+      // if (!context.req.isAuth) throw Error("Not authorized!")
       return await User.find({}).exec();
     }
   },
 
   Mutation: {
+    checkSignin: async (parent, { input }, { req }) => {
+      return req.isAuth
+    },
     signin: async (parent, { input }, { req }) => {
       const { email, password } = input;
-      console.log(req.error)
+      // console.log(req.error)
       const user = await User.findOne({ email: email }).exec();
 
-      // if (!user) throw Error("User doesn't exists");
-      if (!user) {
-        return {}
-      }
+      if (!user) throw Error("User doesn't exists");
 
       if (!bcrypt.compareSync(password, user.password))
         throw Error("Unable to verify credentials");
