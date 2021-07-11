@@ -24,10 +24,10 @@
 
 # User type
 type User {
-    id: ID
-    username: String
-    email: String
-    password: String
+    id: ID!
+    username: String!
+    email: String!
+    password: String!
     isAdmin: Boolean
 }
 

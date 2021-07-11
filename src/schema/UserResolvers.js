@@ -61,8 +61,8 @@ const UserResolver = {
         const { user: { id } } = await jwt.verify(refreshToken, process.env.JWT_KEY);
         userId = id
         console.log(userId)
-      } catch (err) {
-        throw Error(err)
+      } catch (error) {
+        throw Error(error);
       }
       const user = await User.findById(userId).exec();
       const [newAccessToken, newRefreshToken] = await createTokens(user, process.env.JWT_KEY);
@@ -73,16 +73,25 @@ const UserResolver = {
       }
     },
     addUser: (parent, { input }, { req }) => {
-      if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
-      return new User(input).save();
+      // if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
+      const { username, email, password } = input
+      try {
+        if (username && email && password) {
+          return new User(input).save();
+        } else {
+          throw Error("User data required");
+        }
+      } catch (error) {
+        throw Error(error);
+      }
     },
     updateUser: (parent, { input }, { req }) => {
       console.log(req.user)
-      if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
+      // if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
       return User.findByIdAndUpdate(input.id, input);
     },
     deleteUser: (parent, { id }, { req }) => {
-      if (!req.isAuth || req.user.roles !== "ADMIN") throw new Error("Not authorized!")
+      // if (!req.isAuth || req.user.roles !== "ADMIN") throw new Error("Not authorized!")
       return User.findByIdAndRemove(id);
     },
   }
