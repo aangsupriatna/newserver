@@ -27,9 +27,6 @@ const createTokens = async (user, secret) => {
 
 const UserResolver = {
   Query: {
-    isSignin: (parent, args, { req }) => {
-      return req.isAuth
-    },
     user: async (parent, { id }, { req }) => {
       if (!req.isAuth) throw Error("Not authorized!")
       return await User.findById(id).exec();
@@ -42,9 +39,6 @@ const UserResolver = {
   },
 
   Mutation: {
-    checkSignin: async (parent, { input }, { req }) => {
-      return req.isAuth
-    },
     signin: async (parent, { input }, { req }) => {
       const { email, password } = input;
       // console.log(req.error)
@@ -61,13 +55,14 @@ const UserResolver = {
         refreshToken,
       };
     },
-    refreshLogin: async (parent, { token }, { context }) => {
+    refreshLogin: async (parent, { refreshToken }, { context }) => {
       let userId = -1
       try {
-        const { user: { id } } = await jwt.verify(token, process.env.JWT_KEY);
+        const { user: { id } } = await jwt.verify(refreshToken, process.env.JWT_KEY);
         userId = id
-      } catch (error) {
-        return {}
+        console.log(userId)
+      } catch (err) {
+        throw Error(err)
       }
       const user = await User.findById(userId).exec();
       const [newAccessToken, newRefreshToken] = await createTokens(user, process.env.JWT_KEY);

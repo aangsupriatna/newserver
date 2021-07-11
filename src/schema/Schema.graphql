@@ -1,6 +1,5 @@
  type Query {
     #  User Query
-    isSignin: Boolean!
     user(id: ID!): User
     users: [User]
 
@@ -11,9 +10,8 @@
 
  type Mutation {
     #  User mutation
-    checkSignin: Boolean
     signin(input: UserLogin): Token
-    refreshLogin(token: String): Token
+    refreshLogin(refreshToken: String): Token
     addUser(input: UserInput): User
     updateUser(input: UserInput): User
     deleteUser(id: ID): User
