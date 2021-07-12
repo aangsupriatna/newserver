@@ -3,11 +3,26 @@ import bcrypt from 'bcrypt';
 const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
-  username: { type: String, unique: true, required: true, dropDups: true },
-  email: { type: String, unique: true, required: true, dropDups: true },
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
+  },
   password: String,
-  isAdmin: { type: Boolean, default: false }
-}, { timestamps: true });
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
+}, {
+  timestamps: true
+});
 
 UserSchema.pre('save', async function (next) {
   const user = this;

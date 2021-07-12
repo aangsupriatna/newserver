@@ -2,7 +2,12 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const Project = Schema({
-  namaProyek: { type: String, unique: true, required: true, dropDups: true },
+  namaProyek: {
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
+  },
   bidang: String,
   lokasi: String,
   namaPemberiTugas: String,
@@ -14,6 +19,8 @@ const Project = Schema({
   jvWith: String,
   tanggalBast: String,
   nomorBast: String
-}, { timestamps: true });
+}, { 
+  timestamps: true 
+});
 
 export default mongoose.model("Project", Project);
