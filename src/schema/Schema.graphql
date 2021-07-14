@@ -47,6 +47,7 @@ type Token {
 input UserLogin{
     email: String!
     password: String!
+    expire: Boolean
 }
 
 # Project type

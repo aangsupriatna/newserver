@@ -2,24 +2,26 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 
-const createTokens = async (user, secret) => {
+const createTokens = async (user, secret, expire) => {
+  const tokenExpire = expire ? '7d' : '20m';
+
   const createAccessToken = jwt.sign(
     {
-      user: {
+      data: {
         id: user.id, isAdmin: user.isAdmin
       }
     },
     secret,
-    { expiresIn: '20m' }
+    { expiresIn: tokenExpire }
   );
 
   const createRefreshToken = jwt.sign(
     {
-      user: { id: user.id }
+      data: { id: user.id }
     }
     ,
     secret,
-    { expiresIn: '7d' }
+    { expiresIn: '10d' }
   );
 
   return Promise.all([createAccessToken, createRefreshToken]);
@@ -28,28 +30,25 @@ const createTokens = async (user, secret) => {
 const UserResolver = {
   Query: {
     user: async (parent, { id }, { req }) => {
-      if (!req.isAuth) throw Error("Not authorized!")
+      if (!req.isAuth) throw Error("Not authorized!");
       return await User.findById(id).exec();
     },
     users: async (parent, input, { req }) => {
-      // console.log(req.error)
-      // if (!context.req.isAuth) throw Error("Not authorized!")
+      if (!req.isAuth) throw Error("Not authorized!");
       return await User.find({}).exec();
     }
   },
 
   Mutation: {
     signin: async (parent, { input }, { req }) => {
-      const { email, password } = input;
-      // console.log(req.error)
+      const { email, password, expire } = input;
       const user = await User.findOne({ email: email }).exec();
-
       if (!user) throw Error("User doesn't exists");
 
       if (!bcrypt.compareSync(password, user.password))
         throw Error("Unable to verify credentials");
 
-      const [accessToken, refreshToken] = await createTokens(user, process.env.JWT_KEY);
+      const [accessToken, refreshToken] = await createTokens(user, process.env.JWT_KEY, expire);
       return {
         accessToken,
         refreshToken,
@@ -60,7 +59,6 @@ const UserResolver = {
       try {
         const { user: { id } } = await jwt.verify(refreshToken, process.env.JWT_KEY);
         userId = id
-        console.log(userId)
       } catch (error) {
         throw Error(error);
       }
@@ -73,7 +71,7 @@ const UserResolver = {
       }
     },
     addUser: (parent, { input }, { req }) => {
-      // if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
+      if (!req.isAuth || !req.user.data.isAdmin) throw Error("Not authorized!");
       const { username, email, password } = input
       try {
         if (username && email && password) {
@@ -86,12 +84,11 @@ const UserResolver = {
       }
     },
     updateUser: (parent, { input }, { req }) => {
-      console.log(req.user)
-      // if (!req.isAuth || req.user.roles !== "ADMIN") throw Error("Not authorized!")
+      if (!req.isAuth || !req.user.data.isAdmin) throw Error("Not authorized!");
       return User.findByIdAndUpdate(input.id, input);
     },
     deleteUser: (parent, { id }, { req }) => {
-      // if (!req.isAuth || req.user.roles !== "ADMIN") throw new Error("Not authorized!")
+      if (!req.isAuth || !req.user.data.isAdmin) throw Error("Not authorized!");
       return User.findByIdAndRemove(id);
     },
   }
